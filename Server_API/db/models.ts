@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { authentication } from '../helpers';
 
 
 const bookSchema = new mongoose.Schema({
@@ -13,4 +14,24 @@ const bookSchema = new mongoose.Schema({
 
 });
 
+const userSchema = new mongoose.Schema({
+    "firsName": {type: String, require: true},
+    "lastName": {type: String, require: true},
+    "address": {
+        "street": {type: String, require: true},
+        "city": {type: String, require: true},
+        "country": {type: String, require: true},
+        "post_code": {type: String, require: true},
+    },
+    "email": {type: String, require: true},
+    "phone": {type: Number, require: true},
+    "authentication": {
+        "password" : {type: String, required: true , select: false},
+        "key" : {type:String, select: false},
+        "sessionToken" : { type:String, select: false}
+    }
+
+})
+
 export const bookModel = mongoose.model("Book", bookSchema);
+export const userModel = mongoose.model("User", userSchema);
