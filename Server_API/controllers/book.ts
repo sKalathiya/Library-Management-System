@@ -74,7 +74,6 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
 
     //checking if present
     if( !title || !author || !publish_year || !publisher || !language || !copies || !category || !cover){
-      console.log( " here");
         return res.sendStatus(400);
     }
 
@@ -91,7 +90,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     }
 
     //calling action to add book
-    const book = await addBookAction( {title, author, publish_year, publisher, language, copies, category, cover});
+    const book = await addBookAction( {title, author, publish_year, publisher, language, copies, category, cover, date_Added: new Date() });
     // upload.single(req.body.file);
 
     res.status(200).json(book).end();
