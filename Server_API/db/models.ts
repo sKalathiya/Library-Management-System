@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema({
         "post_code": {type: String, require: true},
     },
     "email": {type: String, require: true},
+
+  
+
     "phone": {type: Number, require: true},
     "favoriteBooks": [String],
     "role":{type:String, enum: ['Patron','Bookkeeper']}
