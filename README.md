@@ -13,8 +13,6 @@ This is a full-stack library management application built using the MERN stack (
   - [Lending Management](#lending-management)
   - [User Management](#user-management)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - User authentication and authorization
@@ -79,7 +77,3 @@ This is a full-stack library management application built using the MERN stack (
 - Manage books by adding, updating, or deleting book records.
 - View and manage lending deals.
 - Update user profiles and change passwords.
-
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
