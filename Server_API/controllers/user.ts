@@ -1,7 +1,7 @@
 import express from 'express';
 import {addUser_Action, deleteUser_Action, getUser_Action, getUserByFilter_Action, getUserById_Action, updateUser_Action} from '../db/actions/userActions';
 import { deleteAuthentication_Action } from '../db/actions/authenticationActions';
-
+import { deleteLendingByBorrower_Action, getLendingByFilter_Action} from '../db/actions/lendingAction';
 
 
 
@@ -109,6 +109,12 @@ export const deleteUser = async ( req: express.Request , res: express.Response) 
   try {
     const { id} = req.params;
 
+    //checking if any lending is available
+    const lendings = await getLendingByFilter_Action({borrowerUser : id, status: "Borrowed"})
+    if(lendings.length != 0){
+      return res.sendStatus(400);
+    }
+
     //calling _Action to delete user
     const user = await deleteUser_Action(id);
 
@@ -120,6 +126,8 @@ export const deleteUser = async ( req: express.Request , res: express.Response) 
 
         //if removed
         if(authenticate){
+          //removing lendings
+          await deleteLendingByBorrower_Action(id);
           return res.sendStatus(200);
         }
         //if not removed

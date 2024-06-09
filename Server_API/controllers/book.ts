@@ -1,6 +1,9 @@
 import express from 'express';
-import {getBooksAction, addBookAction, getBookByIdAction, deleteBookAction, updateBookAction, getBooksByFilterAction} from '../db/actions/bookActions';
-import {upload} from "../helpers";
+import {getBooks_Action, addBook_Action, getBookById_Action, deleteBook_Action, updateBook_Action, getBooksByFilter_Action} from '../db/actions/bookActions';
+import fs from 'fs';
+import { getAuthenticationBySession_Action } from '../db/actions/authenticationActions';
+import {deleteLendingByBook_Action, getLendingByFilter_Action} from '../db/actions/lendingAction';
+import { deleteFile } from '../helpers';
 
 
 /********************************GET REQUESTS********************************** */
@@ -9,8 +12,8 @@ import {upload} from "../helpers";
 export const getBooks = async( req: express.Request, res: express.Response) => {
   try {
    
-    //calling action to get books
-    const books = await getBooksAction();
+    //calling _Action to get books
+    const books = await getBooks_Action();
 
     return res.status(200).json(books).end();
   } catch (error) {
@@ -24,8 +27,8 @@ export const getBookById = async( req: express.Request, res: express.Response) =
   try {
     const {id }= req.params;
 
-    //calling actions to get book by ID
-    const book = await getBookByIdAction(id);
+    //calling _Actions to get book by ID
+    const book = await getBookById_Action(id);
 
     //checking if book present
     if( book ){
@@ -49,8 +52,8 @@ export const getBooksByFilter = async ( req: express.Request , res: express.Resp
     data.language ? data.language = {$all : data.language } : {};
     data.publisher ? data.publisher =  {$all : data.publisher }: {} ;
 
-    //calling action to filter books
-    const books = await getBooksByFilterAction(data);
+    //calling _Action to filter books
+    const books = await getBooksByFilter_Action(data);
 
     res.status(200).json(books).end();
   } catch (error) {
@@ -65,33 +68,51 @@ export const getBooksByFilter = async ( req: express.Request , res: express.Resp
 //add book
 export const addBook = async ( req: express.Request, res: express.Response) => {
     try {
+    //checking session
+    const sessionToken = req.cookies["auth"];
+    if(!sessionToken){
+      return res.sendStatus(403);
+    }
 
+    //getting user
+    const auth = await getAuthenticationBySession_Action(sessionToken);
+
+    const addedBy_User = auth.userId;
       
     const { title, author, publish_year, publisher, language, copies, category} = req.body;
-   
-    // const cover = req.file?.originalname;
-    const cover = "s.png";
-
-    //checking if present
-    if( !title || !author || !publish_year || !publisher || !language || !copies || !category || !cover){
-        return res.sendStatus(400);
-    }
-
-    //checking constraints
-    if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
-    {
-        return res.sendStatus(400);
-    }
-   
-    //calling action to see if same title present
-    const same_book = await getBooksByFilterAction({title });
-    if(same_book.length != 0){
+    //checking if cover present
+    if(!req.file){
       return res.sendStatus(400);
     }
 
-    //calling action to add book
-    const book = await addBookAction( {title, author, publish_year, publisher, language, copies, category, cover, date_Added: new Date() });
-    // upload.single(req.body.file);
+    const cover = req.file.filename;
+
+    // //checking if present
+    if( !title || !author || !publish_year || !publisher || !language || !copies || !category || !cover || !addedBy_User){
+        //delete cover if book not added
+        deleteFile(cover);
+        return res.sendStatus(400);
+    }
+
+    // //checking constraints
+    if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
+    {
+        //delete cover if book not added
+        deleteFile(cover);
+        return res.sendStatus(400);
+    }
+   
+    //calling _Action to see if same title present
+    const same_book = await getBooksByFilter_Action({title });
+    if(same_book.length != 0){
+      //delete cover if book not added
+      deleteFile(cover);
+      return res.sendStatus(400);
+    }
+
+    //calling _Action to add book
+    const book = await addBook_Action( {title, author, publish_year, publisher, language, Total_copies: copies, Available_copies: copies, category, cover, date_Added: new Date(), addedBy_User });
+    
 
     res.status(200).json(book).end();
     } catch (error) {
@@ -108,14 +129,22 @@ export const deleteBook = async ( req: express.Request , res: express.Response) 
   try {
     const { id} = req.params;
 
-    //TODO
-    // Add ways to delete cover 
+    //checking if any lendings
+    const lendings = await getLendingByFilter_Action({bookId : id, status: "Borrowed"})
+    if(lendings.length != 0){
+      return res.sendStatus(400);
+    }
 
-    //calling action to delete book
-    const book = await deleteBookAction(id);
+
+    //calling _Action to delete book
+    const book = await deleteBook_Action(id);
 
     //checking if book was deleted
     if( book ){
+        //delete cover of book
+        deleteFile(book.cover);
+        //removing all lending
+        await deleteLendingByBook_Action(id);
         return res.status(200).json(book).end();
     }else{
         return res.sendStatus(400);
@@ -136,35 +165,66 @@ export const updateBook = async ( req: express.Request, res: express.Response) =
   try {
   const {id} = req.params;
   const { title, author, publish_year, publisher, language, copies, category} = req.body;
-  //TODO
-    // Add ways to update cover and store link in mongoose
-
-  const cover = "s.png";
   
+  //original cover
+  const bookForCover= await getBookById_Action(id);
+  if(!bookForCover){
+    return res.sendStatus(400);
+  }
+  //setting available copies
+  let Available_copies;
+  if(copies){
+    Available_copies = bookForCover.Available_copies + copies - bookForCover.Total_copies;
+    if( Available_copies < 0 ){
+      //new total is less than the rented books
+      return res.sendStatus(400);
+    }
+  }
+  
+
+  //getting new cover name
+  const old_cover = bookForCover.cover;
+  let new_cover = old_cover;
+  if(req.file){
+    new_cover = req.file.filename;
+  }
+
   //checking if present
-  if( !title || !author || !publish_year || !publisher || !language || !copies || !category || !cover){
+  if( !title || !author || !publish_year || !publisher || !language || !copies || !category ){
+      //delete new cover only if new cover was provided
+      req.file ? deleteFile(new_cover): {};
       return res.sendStatus(400);
   }
 
   //checking constraints
   if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
-  {
+  { 
+      //delete new cover only if new cover was provided
+      req.file ? deleteFile(new_cover): {};
       return res.sendStatus(400);
   }
 
-  //calling action for checking if same title present
-  const same_book: any = await getBooksByFilterAction({title, _id: {$ne: id} });
+  //calling _Action for checking if same title present
+  const same_book: any = await getBooksByFilter_Action({title, _id: {$ne: id} });
   if(same_book.length != 0){
+    //delete new cover only if new cover was provided
+    req.file ? deleteFile(new_cover): {};
     return res.sendStatus(400);
   }
 
-  //calling action to update
-  const book = await updateBookAction(id, {title, author, publish_year, publisher, language, copies, category, cover});
+  //calling _Action to update
+  const book = await updateBook_Action(id, {title, author, publish_year, publisher, language, Total_copies:copies, Available_copies , category, cover: new_cover});
 
   //checking if updated
   if( book ){
+    if(req.file){
+      //delete old cover is updated successfully
+       deleteFile(old_cover);
+    }
     res.status(200).json(book).end();
   }else{
+     ///delete new cover only if new cover was provided
+    req.file ? deleteFile(new_cover): {};
     return res.sendStatus(400);
   }
 

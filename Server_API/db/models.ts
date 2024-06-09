@@ -8,7 +8,8 @@ const bookSchema = new mongoose.Schema({
     "publish_year": {type: Number , require: true},
     "publisher": [String],
     "language": [String],
-    "copies": { type: Number, require: true},
+    "Total_copies": { type: Number, require: true},
+    "Available_copies": { type: Number, require: true},
     "category": { type: String, require: true},
     "date_Added": {type: Date, require: true},
     "addedBy_User": {type: String, require: true}
@@ -41,10 +42,12 @@ const lendingSchema= new mongoose.Schema({
     "bookId": {type: String, require: true},
     "borrowerUser": {type: String, require: true},
     "lenderUser": {type: String, require: true},
+    "updatedByUser": {type: String, require: true},
     "date_Borrowed": {type: Date, require: true},
-    "date_Returned": {type: Date, require: true, select: false},
+    "Last_Updated": {type: Date, require: true, select: false},
+    "Expected_Returned": {type: Date, require: true, select: false},
     "borrowedDays": {type: Number, require: true, select: false},
-    "status": {type: String, enum:['Returned', 'Borrowed', 'Damaged', 'Lost', 'Delayed Return'], require: true, select: false}
+    "status": {type: String, enum:['Returned', 'Borrowed', 'Damaged', 'Lost', 'Delayed Return', "Cancelled"], require: true}
 })
 
 

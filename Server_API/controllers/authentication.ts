@@ -101,9 +101,8 @@ export const registerUser = async ( req: express.Request, res: express.Response)
     const key = random();
   
     //calling _Action to add user
-    console.log(req.body);
     const user = await addUser_Action( {firstName, lastName, email, phone, address, role});
-    console.log(user)
+  
 
     //checking is user added
     if( user ){
