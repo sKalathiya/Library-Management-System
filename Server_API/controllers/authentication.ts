@@ -82,7 +82,9 @@ export const registerUser = async ( req: express.Request, res: express.Response)
     try {
   
       
-    const { firstName, lastName, email, phone, address, password, role} = req.body;
+    const { firstName, lastName, email, phone: p, address, password, role} = req.body;
+
+    const phone: Number = Number(p);
    
   
     //checking if present

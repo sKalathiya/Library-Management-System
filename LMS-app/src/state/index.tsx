@@ -1,12 +1,27 @@
 import {  createContext, useState } from "react";
+import { Session } from "../Types";
 
-const UserContext = createContext<[any, React.Dispatch<React.SetStateAction<any>>] | null>(null);
 
-export const UserProvider = ( {children}: any  ) => {
-    const [user, setUser]  = useState(null);
+export interface SessionContextType {
+  session: Session;
+  setSession: React.Dispatch<React.SetStateAction<Session>>;
+}
+
+export const SessionContext = createContext<SessionContextType >({
+  session:{firstName: '',
+    _id: '',role: ""},
+  setSession: () => {}
+});
+
+export const SessionProvider = ({ children }: any) => {
+  const [session, setSession] = useState<Session>({
+    firstName: '',
+    _id: '',
+    role:"",
+  });
     return (
-        <UserContext.Provider value={[user, setUser]}>
+        <SessionContext.Provider value={{session, setSession}}>
             {children}
-        </UserContext.Provider>
+        </SessionContext.Provider>
     )
 }
