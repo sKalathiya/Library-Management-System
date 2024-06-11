@@ -5,7 +5,7 @@ import SideBar from "./SideBar"
 const BookKeeper = () => {
    
   return (
-    <div className=" flex ">
+    <div className=" flex items-start">
     <SideBar />
     <Outlet/>
     </div>

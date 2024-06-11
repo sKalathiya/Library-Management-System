@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import {User} from '../Types'
 import { useMutation } from "@tanstack/react-query";
 import { addPatron } from "./API";
-
+import { useNavigate } from "react-router"
 
 
 const Register = () => {
@@ -22,16 +22,18 @@ const Register = () => {
         
 
     })
-
-   
-
+    
     const {mutate: addPatronMutation, isPending, data, isError, error} = useMutation({
       mutationFn: addPatron
     })
+  
+    const navigate = useNavigate();
 
-    if(data){
-      console.log(data);
-    }
+    useEffect(() => {
+      if (data) {
+        navigate("/auth/login");
+      }
+    }, [data, navigate])
 
     //handle submit data
   const handleSubmit = (event: FormEvent) => {
