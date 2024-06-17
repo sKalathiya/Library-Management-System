@@ -6,6 +6,7 @@ interface ModalProps {
     onSubmit: (event: FormEvent) => void;
     children: ReactNode;
     isLoading: boolean;
+    isDelete: boolean;
 }
 
 const Modal = ({
@@ -14,6 +15,7 @@ const Modal = ({
     onSubmit,
     children,
     isLoading,
+    isDelete,
 }: ModalProps) => {
     if (!toggle) return null;
 
@@ -24,14 +26,28 @@ const Modal = ({
                 <div className="modal-action">
                     {isLoading ? (
                         <>
-                            <button className="btn bg-blue-600 text-gray-100 font-semibold hover:bg-blue-500 cursor-not-allowed">
+                            <button
+                                className={
+                                    "btn " +
+                                    (isDelete
+                                        ? "bg-red-600 hover:bg-red-500 "
+                                        : "bg-blue-600 hover:bg-blue-500") +
+                                    "text-gray-100 font-semibold  cursor-not-allowed"
+                                }
+                            >
                                 <span className="loading loading-dots loading-md"></span>
                             </button>
                         </>
                     ) : (
                         <>
                             <button
-                                className="btn bg-blue-600 text-gray-100 font-semibold hover:bg-blue-500 "
+                                className={
+                                    "btn " +
+                                    (isDelete
+                                        ? "bg-red-600 hover:bg-red-500 "
+                                        : "bg-blue-600 hover:bg-blue-500") +
+                                    "text-gray-100 font-semibold "
+                                }
                                 onClick={(e) => {
                                     onSubmit(e);
                                 }}

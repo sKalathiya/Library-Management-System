@@ -80,7 +80,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
 
     const updatedBy_User = auth.userId;
       
-    const { title, author, publish_year, publisherJson, languageJson, copies, category, description} = req.body;
+    const { title, author, publish_year, publisherJson, languageJson, Total_copies, category, description} = req.body;
     //checking if cover present
     if(!req.file){
       return res.sendStatus(400);
@@ -89,7 +89,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     const cover = req.file.filename;
 
     // //checking if present
-    if( !title || !author || !publish_year || !publisherJson || !languageJson || !copies || !category || !cover || !updatedBy_User || !description){
+    if( !title || !author || !publish_year || !publisherJson || !languageJson || !Total_copies || !category || !cover || !updatedBy_User || !description){
         //delete cover if book not added
         deleteFile(cover);
         return res.sendStatus(400);
@@ -99,7 +99,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     const language = JSON.parse(languageJson);
     
     // //checking constraints
-    if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
+    if( publisher.length == 0 || language.length == 0 || Total_copies < 1 || publish_year > new Date().getFullYear() )
     {
         //delete cover if book not added
         deleteFile(cover);
@@ -115,7 +115,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     }
 
     //calling _Action to add book
-    const book = await addBook_Action( {title, author, publish_year, publisher, language, Total_copies: parseInt(copies), Available_copies: parseInt(copies), category, cover, last_Updated: new Date(), updatedBy_User , description});
+    const book = await addBook_Action( {title, author, publish_year, publisher, language, Total_copies: Total_copies, Available_copies: Total_copies, category, cover, last_Updated: new Date(), updatedBy_User , description});
     
 
     res.status(200).json(book).end();

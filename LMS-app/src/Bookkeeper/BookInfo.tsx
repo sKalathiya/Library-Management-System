@@ -4,6 +4,7 @@ import { getBook } from "./API/api";
 
 import Skeleton from "../Helpers/Skeleton";
 import BookUpdate from "./BookUpdate";
+import BookDelete from "./BookDelete";
 
 const BookInfo = () => {
     const { state } = useLocation();
@@ -52,7 +53,7 @@ const BookInfo = () => {
                         />
                     </div>
                     <div className="p-4 flex flex-col gap-8">
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-row gap-2 items-center">
                             <div className=" text-3xl font-semibold">
                                 {book.title}
                             </div>
@@ -61,18 +62,9 @@ const BookInfo = () => {
                                 {book.author}
                             </div>
                             <BookUpdate book={book} />
+                            <BookDelete id={book._id} title={book.title} />
                         </div>
-                        <div>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Sapiente nesciunt fugit quos, in velit nostrum
-                            eligendi earum quia modi sit provident id quo porro
-                            aperiam commodi itaque doloremque illum ratione!
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Aperiam consectetur beatae reiciendis nobis!
-                            Reiciendis inventore accusamus eos fugit aspernatur
-                            temporibus at laboriosam delectus ad consequuntur
-                            animi a, natus quaerat officiis!
-                        </div>
+                        <div>{book.description}</div>
                         <div className="grid grid-rows-1 grid-cols-5 gap-16 mt-auto">
                             <div className="flex flex-col gap-2 bas">
                                 <div>
@@ -131,7 +123,6 @@ const BookInfo = () => {
                             <div className="flex flex-col items-end text-xs">
                                 ~ Last Updated
                                 <div className="font-bold">
-                                    {" "}
                                     {book.last_Updated}{" "}
                                 </div>
                             </div>

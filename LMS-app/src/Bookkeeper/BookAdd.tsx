@@ -1,43 +1,54 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { Book } from "../Types/types";
+import { addBook, updateBook } from "./API/api";
 import Model from "../Helpers/Model";
 import MultipleSelect from "../Helpers/MultipleSelect";
-import { Book } from "../Types/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateBook } from "./API/api";
 
-interface BookUpdateProps {
-    book: Book;
-}
+const emptyBook = {
+    _id: "",
+    title: "",
+    description: "",
+    cover: "",
+    author: "",
+    publish_year: new Date().getFullYear(),
+    publisher: [],
+    language: [],
+    Total_copies: 0,
+    Available_copies: 0,
+    category: "",
+    last_Updated: new Date(),
+    updatedBy_User: "",
+};
 
-const BookUpdate = ({ book }: BookUpdateProps) => {
+const BookAdd = () => {
     const [toggleModal, setToggleModal] = useState(false);
-    const [publisherUpdateList, setPublisherList] = useState(book.publisher);
-    const [languageUpdateList, setLanguageList] = useState(book.language);
-    const [formData, setFormData] = useState<Book>(book);
+    const [formData, setFormData] = useState<Book>(emptyBook);
+    const [publisherList, setPublisherList] = useState<string[]>([]);
+    const [languageList, setLanguageList] = useState<string[]>([]);
     const [file, setFile] = useState<File | null>(null);
     const queryClient = useQueryClient();
-
     const {
-        mutate: updateBookMutate,
+        mutate: addBookMutate,
         isPending,
         data,
         isError,
         error,
         reset,
     } = useMutation({
-        mutationFn: (formData: FormData) => updateBook(formData, book._id),
+        mutationFn: (data: FormData) => addBook(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["book", book._id] });
+            queryClient.invalidateQueries({ queryKey: ["books"] });
         },
     });
 
     useEffect(() => {
         if (toggleModal) {
             // Refresh the modal content when it opens
-            setPublisherList(book.publisher);
-            setLanguageList(book.language);
+            setPublisherList([]);
+            setLanguageList([]);
             setFile(null);
-            setFormData(book);
+            setFormData(emptyBook);
         }
         if (data) {
             setToggleModal(!toggleModal);
@@ -64,24 +75,24 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
         data.append("category", formData.category);
         data.append("publish_year", formData.publish_year.toString());
         data.append("Total_copies", formData.Total_copies.toString());
-        data.append("publisherJson", JSON.stringify(publisherUpdateList));
-        data.append("languageJson", JSON.stringify(languageUpdateList));
+        data.append("publisherJson", JSON.stringify(publisherList));
+        data.append("languageJson", JSON.stringify(languageList));
         if (file) {
             data.append("file", file);
         }
 
-        updateBookMutate(data);
+        addBookMutate(data);
     };
-
     return (
         <>
             <button
                 onClick={() => setToggleModal(!toggleModal)}
-                className="cursor-pointer btn bg-blue-600 text-gray-100 hover:bg-blue-500 ml-auto"
-                title="Update Book"
+                className="cursor-pointer btn bg-blue-600 text-gray-100 hover:bg-blue-500"
+                title="Add Book"
             >
-                <i className="fas fa-2xl fa-edit"></i>
+                <i className="fas fa-2xl fa-plus-circle"></i>
             </button>
+
             <Model
                 toggle={toggleModal}
                 setToggle={setToggleModal}
@@ -90,7 +101,7 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                 isDelete={false}
             >
                 <div className="flex flex-col gap-4 p-2 m-1">
-                    <div className="text-3xl font-semibold my-2">Update</div>
+                    <div className="text-3xl font-semibold my-2">Add</div>
                     {isError && (
                         <div className="text-red-500 font-light">
                             {error.message}
@@ -167,7 +178,7 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                     <div className="w-full">
                         <MultipleSelect
                             label={"Publishers"}
-                            items={publisherUpdateList}
+                            items={publisherList}
                             setItems={setPublisherList}
                         />
                     </div>
@@ -175,7 +186,7 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                     <div className="w-full">
                         <MultipleSelect
                             label={"Languages"}
-                            items={languageUpdateList}
+                            items={languageList}
                             setItems={setLanguageList}
                         />
                     </div>
@@ -199,8 +210,8 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                             </label>
                             <input
                                 className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 
-                    file:rounded-full file:border-0 file:text-sm file:font-semibold
-                    file:bg-violet-50 file:text-blue-500 file:cursor-pointer"
+            file:rounded-full file:border-0 file:text-sm file:font-semibold
+            file:bg-violet-50 file:text-blue-500 file:cursor-pointer"
                                 type="file"
                                 placeholder="Cover"
                                 name="cover"
@@ -214,4 +225,4 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
     );
 };
 
-export default BookUpdate;
+export default BookAdd;
