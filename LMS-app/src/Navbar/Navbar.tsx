@@ -1,7 +1,7 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
-import { SessionContext } from "../state";
+import { SessionContext } from "../state/state";
 import { useMutation } from "@tanstack/react-query";
-import { logoutUser } from "../Authentication/API";
+import { logoutUser } from "../Authentication/API/api";
 import { useNavigate } from "react-router";
 
 

@@ -1,5 +1,5 @@
 import {  createContext, useState } from "react";
-import { Session } from "../Types";
+import { Session } from "../Types/types";
 
 
 export interface SessionContextType {

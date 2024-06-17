@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { renderPagination } from "./Pagination";
+import { useNavigate } from "react-router";
 
 
 
-const ListTemplate = ({items, titles, properties}) => {
+const ListTemplate = ({items, titles, properties, infoPage }) => {
+
+    const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(1);
     const total = items.length;
@@ -30,10 +33,10 @@ const ListTemplate = ({items, titles, properties}) => {
         </div>
 
         {list.map((item: any) => {return(
-            <div className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover: cursor-pointer gap-2 items-center " key={item._id}>
+            <div className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover: cursor-pointer gap-2 items-center " key={item._id} onClick={() => {navigate(infoPage, {state: {id: item._id}})}}>
                 <div className="flex-grow w-full ">{++i}</div>
                 {properties.map((title: string)=>{return (
-                    <div className="flex-grow w-full " key={title}>{item[title]}</div>
+                    <div className="flex-grow w-full ">{item[title]}</div>
                 )})}
             </div>
         )})}

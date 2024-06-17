@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const bookSchema = new mongoose.Schema({
     "title": {type: String, require: true},
     "author": {type: String, require: true},
+    "description": {type:String,require: true},
     "cover": {type: String, require: true},
     "publish_year": {type: Number , require: true},
     "publisher": [String],
@@ -11,8 +12,8 @@ const bookSchema = new mongoose.Schema({
     "Total_copies": { type: Number, require: true},
     "Available_copies": { type: Number, require: true},
     "category": { type: String, require: true},
-    "date_Added": {type: Date, require: true},
-    "addedBy_User": {type: String, require: true}
+    "last_Updated": {type: Date, require: true},
+    "updatedBy_User": {type: String, require: true}
 
 });
 

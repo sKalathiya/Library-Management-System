@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import BookKeeper from "../Bookkeeper";
+import BookKeeper from "../Bookkeeper/BookKeeper";
 import { Login, Register } from "../Authentication";
 import BookTab from "../Bookkeeper/BookTab";
+import BookInfo from "../Bookkeeper/BookInfo";
 
 export const router = createBrowserRouter([
     {
@@ -15,7 +16,11 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: "booktab",
-                        element: <BookTab/>
+                        element: <BookTab/>,
+                    },
+                    {
+                        path:"bookinfo",
+                        element: <BookInfo/>
                     } 
                 ]
             }

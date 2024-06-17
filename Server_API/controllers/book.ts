@@ -4,6 +4,7 @@ import fs from 'fs';
 import { getAuthenticationBySession_Action } from '../db/actions/authenticationActions';
 import {deleteLendingByBook_Action, getLendingByFilter_Action} from '../db/actions/lendingAction';
 import { deleteFile } from '../helpers';
+import { json } from 'body-parser';
 
 
 /********************************GET REQUESTS********************************** */
@@ -77,9 +78,9 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     //getting user
     const auth = await getAuthenticationBySession_Action(sessionToken);
 
-    const addedBy_User = auth.userId;
+    const updatedBy_User = auth.userId;
       
-    const { title, author, publish_year, publisher, language, copies, category} = req.body;
+    const { title, author, publish_year, publisherJson, languageJson, copies, category, description} = req.body;
     //checking if cover present
     if(!req.file){
       return res.sendStatus(400);
@@ -88,12 +89,15 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     const cover = req.file.filename;
 
     // //checking if present
-    if( !title || !author || !publish_year || !publisher || !language || !copies || !category || !cover || !addedBy_User){
+    if( !title || !author || !publish_year || !publisherJson || !languageJson || !copies || !category || !cover || !updatedBy_User || !description){
         //delete cover if book not added
         deleteFile(cover);
         return res.sendStatus(400);
     }
 
+    const publisher = JSON.parse(publisherJson);
+    const language = JSON.parse(languageJson);
+    
     // //checking constraints
     if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
     {
@@ -111,7 +115,7 @@ export const addBook = async ( req: express.Request, res: express.Response) => {
     }
 
     //calling _Action to add book
-    const book = await addBook_Action( {title, author, publish_year, publisher, language, Total_copies: copies, Available_copies: copies, category, cover, date_Added: new Date(), addedBy_User });
+    const book = await addBook_Action( {title, author, publish_year, publisher, language, Total_copies: parseInt(copies), Available_copies: parseInt(copies), category, cover, last_Updated: new Date(), updatedBy_User , description});
     
 
     res.status(200).json(book).end();
@@ -163,9 +167,22 @@ export const deleteBook = async ( req: express.Request , res: express.Response) 
 //update book
 export const updateBook = async ( req: express.Request, res: express.Response) => {
   try {
+    console.log(req.body)
   const {id} = req.params;
-  const { title, author, publish_year, publisher, language, copies, category} = req.body;
+  const { title, author, publish_year, publisherJson, languageJson, Total_copies, category, description}= req.body;
   
+    //checking session
+    const sessionToken = req.cookies["auth"];
+    if(!sessionToken){
+      return res.sendStatus(403);
+    }
+
+    //getting user
+    const auth = await getAuthenticationBySession_Action(sessionToken);
+
+    const updatedBy_User = auth.userId;
+
+
   //original cover
   const bookForCover= await getBookById_Action(id);
   if(!bookForCover){
@@ -173,8 +190,9 @@ export const updateBook = async ( req: express.Request, res: express.Response) =
   }
   //setting available copies
   let Available_copies;
-  if(copies){
-    Available_copies = bookForCover.Available_copies + copies - bookForCover.Total_copies;
+  if(Total_copies){
+    Available_copies = bookForCover.Available_copies + parseInt(Total_copies) - bookForCover.Total_copies;
+    console.log(Available_copies)
     if( Available_copies < 0 ){
       //new total is less than the rented books
       return res.sendStatus(400);
@@ -190,14 +208,17 @@ export const updateBook = async ( req: express.Request, res: express.Response) =
   }
 
   //checking if present
-  if( !title || !author || !publish_year || !publisher || !language || !copies || !category ){
+  if( !title || !author || !publish_year || !publisherJson || !languageJson || !Total_copies || !category || !description){
       //delete new cover only if new cover was provided
       req.file ? deleteFile(new_cover): {};
       return res.sendStatus(400);
   }
 
+  const publisher = JSON.parse(publisherJson);
+  const language = JSON.parse(languageJson);
+
   //checking constraints
-  if( publisher.length == 0 || language.length == 0 || copies < 1 || publish_year > new Date().getFullYear() )
+  if( publisher.length == 0 || language.length == 0 || Total_copies < 1 || publish_year > new Date().getFullYear() )
   { 
       //delete new cover only if new cover was provided
       req.file ? deleteFile(new_cover): {};
@@ -213,7 +234,7 @@ export const updateBook = async ( req: express.Request, res: express.Response) =
   }
 
   //calling _Action to update
-  const book = await updateBook_Action(id, {title, author, publish_year, publisher, language, Total_copies:copies, Available_copies , category, cover: new_cover});
+  const book = await updateBook_Action(id, {title, author, publish_year, publisher, language, Total_copies, Available_copies , category, cover: new_cover, last_Updated: new Date(), updatedBy_User, description});
 
   //checking if updated
   if( book ){

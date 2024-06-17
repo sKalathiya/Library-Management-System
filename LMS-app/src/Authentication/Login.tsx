@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react"
-import { Auth } from "../Types"
+import { Auth } from "../Types/types"
 import { useMutation } from "@tanstack/react-query"
-import { authUser } from "./API"
+import { authUser } from "./API/api"
 import { useNavigate } from "react-router"
-import { SessionContext } from "../state"
+import { SessionContext } from "../state/state"
 
 
 const Login = () => {
@@ -67,7 +67,7 @@ const Login = () => {
             <label className="block text-sm font-semibold mb-2">
                 Password
             </label>
-            <input className="input input-bordered w-full" placeholder="password" name="password" value={auth.password} onChange={onChange}/>
+            <input  type="password" className="input input-bordered w-full" placeholder="password" name="password" value={auth.password} onChange={onChange}/>
         </div>
       </div>
         <a className="link link-hover ml-6">Forgot Password?</a>

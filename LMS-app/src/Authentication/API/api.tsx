@@ -1,4 +1,4 @@
-import { Auth, User } from "../../Types";
+import { Auth, User } from "../../Types/types";
 
 const localPath = "http://localhost:8080/"
 
