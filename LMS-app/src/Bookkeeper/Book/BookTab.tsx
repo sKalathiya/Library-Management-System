@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "./API/api";
-import ListTemplate from "../Helpers/ListTemplate";
+import ListTemplate from "../../Helpers/ListTemplate";
 import BookAdd from "./BookAdd";
 
 const BookTab = () => {
@@ -18,6 +18,8 @@ const BookTab = () => {
         <div className="bg-base-300 p-4 rounded-box shadow-xl w-full mx-4">
             {isLoading ? (
                 <span className="loader loading-dots"></span>
+            ) : isError ? (
+                <span className="text-red-600">{error?.message}</span>
             ) : (
                 <div className="flex flex-col">
                     <div className="flex flex-row justify-between mx-2 p-4">

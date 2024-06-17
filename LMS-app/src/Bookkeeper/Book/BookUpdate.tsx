@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Model from "../Helpers/Model";
-import MultipleSelect from "../Helpers/MultipleSelect";
-import { Book } from "../Types/types";
+import Model from "../../Helpers/Model";
+import MultipleSelect from "../../Helpers/MultipleSelect";
+import { Book } from "../../Types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBook } from "./API/api";
 

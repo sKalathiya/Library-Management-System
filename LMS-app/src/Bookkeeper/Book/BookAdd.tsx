@@ -1,9 +1,9 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { Book } from "../Types/types";
+import { Book } from "../../Types/types";
 import { addBook, updateBook } from "./API/api";
-import Model from "../Helpers/Model";
-import MultipleSelect from "../Helpers/MultipleSelect";
+import Model from "../../Helpers/Model";
+import MultipleSelect from "../../Helpers/MultipleSelect";
 
 const emptyBook = {
     _id: "",

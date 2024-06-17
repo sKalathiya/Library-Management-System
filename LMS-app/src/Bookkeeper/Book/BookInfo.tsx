@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router";
 import { getBook } from "./API/api";
 
-import Skeleton from "../Helpers/Skeleton";
+import Skeleton from "../../Helpers/Skeleton";
 import BookUpdate from "./BookUpdate";
 import BookDelete from "./BookDelete";
 

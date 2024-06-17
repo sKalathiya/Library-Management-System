@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { deleteBook } from "./API/api";
-import Model from "../Helpers/Model";
+import Model from "../../Helpers/Model";
 
 interface BookDeleteProps {
     id: string;
