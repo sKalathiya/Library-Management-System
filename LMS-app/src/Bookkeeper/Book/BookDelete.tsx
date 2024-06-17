@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { deleteBook } from "./API/api";
 import Model from "../../Helpers/Model";
+import { alertSuccess } from "../../Helpers/Alert";
 
 interface BookDeleteProps {
     id: string;
@@ -36,6 +37,7 @@ const BookDelete = ({ id, title }: BookDeleteProps) => {
         }
         if (data) {
             navigate("/bookkeeper/booktab");
+            alertSuccess("Book Deleted successfully!");
         }
         reset();
     }, [toggleModal, data, navigate]);
@@ -76,9 +78,9 @@ const BookDelete = ({ id, title }: BookDeleteProps) => {
                     )}
                     <div className="w-full">
                         <div>
-                            <div className="block text-sm font-semibold mb-2 flex flex-row gap-2">
+                            <div className=" text-sm font-semibold mb-2 flex flex-row gap-2">
                                 Please enter
-                                <div className="rounded-box border text-red-500 font-bold px-2 border-gray-600">
+                                <div className="rounded-box  text-red-500 font-bold px-2 border-2 border-gray-600">
                                     {title}
                                 </div>
                                 to delete this book.

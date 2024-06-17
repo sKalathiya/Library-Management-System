@@ -38,7 +38,7 @@ const BookInfo = () => {
     }
 
     return (
-        <div className="bg-base-300 p-4 rounded-box shadow-xl w-full mx-4">
+        <div className="bg-base-300 p-4 rounded-box shadow-xl mx-4">
             {isLoading ? (
                 <Skeleton></Skeleton>
             ) : isError ? (
@@ -52,8 +52,8 @@ const BookInfo = () => {
                             alt="image description"
                         />
                     </div>
-                    <div className="p-4 flex flex-col gap-8">
-                        <div className="flex flex-row gap-2 items-center">
+                    <div className="p-4 flex flex-col gap-8 ">
+                        <div className="flex flex-row gap-2 items-center flex-wrap ">
                             <div className=" text-3xl font-semibold">
                                 {book.title}
                             </div>

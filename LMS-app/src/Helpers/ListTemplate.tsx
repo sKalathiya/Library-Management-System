@@ -51,7 +51,7 @@ const ListTemplate = ({
             {list.map((item: any) => {
                 return (
                     <div
-                        className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover: cursor-pointer gap-2 items-center "
+                        className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover: cursor-pointer gap-2 items-center"
                         key={item._id}
                         onClick={() => {
                             navigate(infoPage, { state: { id: item._id } });

@@ -31,7 +31,7 @@ const Modal = ({
                                     "btn " +
                                     (isDelete
                                         ? "bg-red-600 hover:bg-red-500 "
-                                        : "bg-blue-600 hover:bg-blue-500") +
+                                        : "bg-blue-600 hover:bg-blue-500 ") +
                                     "text-gray-100 font-semibold  cursor-not-allowed"
                                 }
                             >
@@ -45,7 +45,7 @@ const Modal = ({
                                     "btn " +
                                     (isDelete
                                         ? "bg-red-600 hover:bg-red-500 "
-                                        : "bg-blue-600 hover:bg-blue-500") +
+                                        : "bg-blue-600 hover:bg-blue-500 ") +
                                     "text-gray-100 font-semibold "
                                 }
                                 onClick={(e) => {

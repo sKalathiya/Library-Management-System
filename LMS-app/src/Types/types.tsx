@@ -24,6 +24,11 @@ export interface Session {
     role: string;
 }
 
+export interface Alert {
+    status: string;
+    msg: string;
+}
+
 export interface Book {
     _id: string;
     title: string;

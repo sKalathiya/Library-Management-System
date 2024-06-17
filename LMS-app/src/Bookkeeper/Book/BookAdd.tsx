@@ -1,9 +1,10 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Book } from "../../Types/types";
-import { addBook, updateBook } from "./API/api";
+import { addBook } from "./API/api";
 import Model from "../../Helpers/Model";
 import MultipleSelect from "../../Helpers/MultipleSelect";
+import { alertSuccess } from "../../Helpers/Alert";
 
 const emptyBook = {
     _id: "",
@@ -52,6 +53,7 @@ const BookAdd = () => {
         }
         if (data) {
             setToggleModal(!toggleModal);
+            alertSuccess("Book Successfully added!");
         }
         reset();
     }, [toggleModal, data]);

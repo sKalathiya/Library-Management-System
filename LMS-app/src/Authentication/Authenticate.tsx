@@ -6,7 +6,6 @@ const Authenticate = ({ children }: { children: ReactNode }) => {
     const sessionJson = localStorage.getItem("session");
     const navigate = useNavigate();
     const { session, setSession } = useContext(SessionContext);
-    console.log("here");
     useEffect(() => {
         if (!sessionJson) {
             navigate("/auth/login");

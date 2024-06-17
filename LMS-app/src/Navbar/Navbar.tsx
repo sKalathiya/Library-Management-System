@@ -20,11 +20,16 @@ const Navbar = () => {
 
             {session.firstName ? (
                 <button
-                    className="btn bg-transparent border-gray-600 hover:border-gray-600 border-2 font-semibold "
+                    className="btn bg-transparent border-gray-600 hover:border-gray-600 border-2 font-semibold r"
                     onClick={toggleMenu}
                 >
                     <i className="fas fa-user p-1 " />
                     <p className=" p-1">{session.firstName}</p>
+                    {isMenuOpen ? (
+                        <i className="fas fa-sort-up mt-2"></i>
+                    ) : (
+                        <i className="fas fa-sort-down mb-1"></i>
+                    )}
                 </button>
             ) : (
                 <button
@@ -39,7 +44,7 @@ const Navbar = () => {
             )}
 
             {isMenuOpen && (
-                <div className="absolute right-0 top-full flex-col bg-base-300 rounded-box p-4 m-4 shadow-md items-center animate-fade-in">
+                <div className="absolute right-0 top-full flex-col bg-base-300 rounded-box border-gray-600 border-2 p-4 mx-4 shadow-xl items-center animate-fade-in">
                     <div className="flex-auto flex justify-center m-2 p-4 cursor-pointer rounded-box hover:bg-base-100 ">
                         View Profile
                     </div>

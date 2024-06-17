@@ -4,6 +4,7 @@ import MultipleSelect from "../../Helpers/MultipleSelect";
 import { Book } from "../../Types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBook } from "./API/api";
+import { alertSuccess } from "../../Helpers/Alert";
 
 interface BookUpdateProps {
     book: Book;
@@ -41,6 +42,7 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
         }
         if (data) {
             setToggleModal(!toggleModal);
+            alertSuccess("Update Successful!");
         }
         reset();
     }, [toggleModal, data]);
