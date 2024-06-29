@@ -21,8 +21,6 @@ const MultipleSelect = ({ label, items, setItems }: MultipleSelectProps) => {
     };
     return (
         <div>
-            <label className="block text-sm font-semibold mb-2">{label}</label>
-
             <input
                 className="input input-bordered w-full"
                 placeholder={label}
@@ -32,7 +30,7 @@ const MultipleSelect = ({ label, items, setItems }: MultipleSelectProps) => {
                 onKeyUp={handleKeyPress}
             />
 
-            <div className="flex flex-row gap-2 my-2 items-center flex-wrap">
+            <div className="flex flex-row gap-2 mt-2 items-center flex-wrap">
                 {items.map((item) => {
                     return (
                         <div className="rounded-box text-sm p-2 bg-base-100 flex flex-row">

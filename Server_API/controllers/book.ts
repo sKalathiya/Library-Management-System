@@ -50,8 +50,17 @@ export const getBooksByFilter = async ( req: express.Request , res: express.Resp
   try {
   
     const data = req.body;
-    data.language ? data.language = {$all : data.language } : {};
-    data.publisher ? data.publisher =  {$all : data.publisher }: {} ;
+  
+
+    data.languageJson ? data.language = {$all : JSON.parse(data.languageJson)  }: {};
+    data.publisherJson ? data.publisher =  {$all : JSON.parse(data.publisherJson) }: {} ;
+
+    data.languageJson ? delete data["languageJson"]: {};
+    data.publisherJson ? delete data["publisherJson"]: {};
+
+    if (Object.keys(data).length == 0){
+        return res.sendStatus(400)
+    }
 
     //calling _Action to filter books
     const books = await getBooksByFilter_Action(data);

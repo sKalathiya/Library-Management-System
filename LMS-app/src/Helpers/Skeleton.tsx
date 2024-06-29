@@ -1,15 +1,9 @@
-
 const Skeleton = () => {
-  return (
-    <div className="grid grid-row-1 grid-col-1  gap-8">
-        <div className="flex flex-col gap-4">
-            <div className="skeleton h-4 w-full"></div>
-            <div className="skeleton h-4 w-full"></div>
-            <div className="skeleton h-4 w-full"></div>
-            <div className="skeleton h-4 w-full"></div>
+    return (
+        <div className="w-full flex flex-row justify-center">
+            <span className="loading loading-dots loading-lg"></span>
         </div>
-    </div>
-  )
-}
+    );
+};
 
-export default Skeleton
+export default Skeleton;

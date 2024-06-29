@@ -2,8 +2,9 @@ import express from 'express';
 import { getAuthenticationBySession_Action} from '../db/actions/authenticationActions';
 import { addLending_Action, getLendingByFilter_Action, getLendingById_Action, getLendings_Action } from '../db/actions/lendingAction';
 import {getBookById_Action} from '../db/actions/bookActions';
-import { lendingModel } from '../db/models';
 import { getUserByEmail_Action } from '../db/actions/userActions';
+import mongoose from 'mongoose';
+import { Book } from '../db/models';
 
 //get all lending
 export const getLendingDeals = async (req: express.Request, res: express.Response) => {
@@ -80,12 +81,12 @@ export const addLending = async (req: express.Request, res: express.Response) =>
  
     //adding the lending deal
     const lendingDeal = await addLending_Action({
-        bookId: book_Id,
+        book: book_Id,
         borrowerUser: borrower_Id,
         lenderUser: lender_id,
         date_Borrowed: new Date(),
-        updatedByUser: undefined,
-        Last_Updated: undefined,
+        updatedByUser: lender_id,
+        Last_Updated: new Date(),
         Expected_Returned: new Date(new Date().getTime()+(borrowedDays*24*60*60*1000)),
         borrowedDays,
         status: "Borrowed"
@@ -117,19 +118,18 @@ export const changeStatusOfDeal = async (req: express.Request, res:express.Respo
 
         //getting lending deal
         const lendingDeal = await getLendingById_Action(id);
-        console.log("here");
-        if(!lendingDeal || !lendingDeal.bookId ){
+       
+        if(!lendingDeal || !lendingDeal.book ){
             return res.sendStatus(400);
         }
-        console.log("here");
+   
         //checking if already closed
         if(lendingDeal.status != "Borrowed"){
             return res.sendStatus(400);
         }
-        console.log("here");
+   
         //finding book to change copies
-        const book_id = lendingDeal.bookId;
-        const book = await getBookById_Action(book_id);
+        const book = lendingDeal.book as Book;
         if(!book){
             return res.sendStatus(400);
         }
@@ -148,7 +148,7 @@ export const changeStatusOfDeal = async (req: express.Request, res:express.Respo
         //changing status of deal
         lendingDeal.status = status;
         lendingDeal.Last_Updated = new Date();
-        lendingDeal.updatedByUser = returnedToUser;
+        lendingDeal.updatedByUser = returnedToUser ;
         await lendingDeal.save();
 
         return res.status(200).json(lendingDeal).end();
@@ -163,8 +163,26 @@ export const changeStatusOfDeal = async (req: express.Request, res:express.Respo
 //Filter lending
 export const getLendingByFilter = async (req:express.Request, res:express.Response) => {
     try {
-
+        console.log(req.body)
         const lendingDeals = await getLendingByFilter_Action(req.body);
+        return res.status(200).json(lendingDeals).end();
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400);
+    }
+} 
+
+
+//Filter lending
+export const getDailyLendings = async (req:express.Request, res:express.Response) => {
+    try {
+        var d = new Date();
+        d.setHours(0,0,0,0);    
+        const lendingDeals = await getLendingByFilter_Action({ date_Borrowed: {
+            $gte: d
+            } });
+        
         return res.status(200).json(lendingDeals).end();
         
     } catch (error) {

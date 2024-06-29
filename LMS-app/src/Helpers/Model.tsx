@@ -52,7 +52,7 @@ const Modal = ({
                                     onSubmit(e);
                                 }}
                             >
-                                Save
+                                {isDelete ? "Delete" : "Save"}
                             </button>
                         </>
                     )}

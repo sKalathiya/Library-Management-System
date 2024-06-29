@@ -92,7 +92,7 @@ const BookAdd = () => {
                 className="cursor-pointer btn bg-blue-600 text-gray-100 hover:bg-blue-500"
                 title="Add Book"
             >
-                <i className="fas fa-2xl fa-plus-circle"></i>
+                <i className="fas fa-2xl fa-plus-circle"></i> Add Book
             </button>
 
             <Model
@@ -178,6 +178,9 @@ const BookAdd = () => {
                     </div>
 
                     <div className="w-full">
+                        <label className="block text-sm font-semibold mb-2">
+                            Publishers
+                        </label>
                         <MultipleSelect
                             label={"Publishers"}
                             items={publisherList}
@@ -186,6 +189,9 @@ const BookAdd = () => {
                     </div>
 
                     <div className="w-full">
+                        <label className="block text-sm font-semibold mb-2">
+                            Languages
+                        </label>
                         <MultipleSelect
                             label={"Languages"}
                             items={languageList}

@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { deleteBook } from "./API/api";
 import Model from "../../Helpers/Model";
 import { alertSuccess } from "../../Helpers/Alert";
+import { BookTabsContext } from "../../state/state";
 
 interface BookDeleteProps {
     id: string;
@@ -11,6 +12,7 @@ interface BookDeleteProps {
 }
 const BookDelete = ({ id, title }: BookDeleteProps) => {
     const [toggleModal, setToggleModal] = useState(false);
+    const { bookTabs, setBookTabs, setActiveTab } = useContext(BookTabsContext);
     const [input, setInput] = useState("");
     const [inputError, setInputError] = useState("");
     const queryClient = useQueryClient();
@@ -36,7 +38,23 @@ const BookDelete = ({ id, title }: BookDeleteProps) => {
             setInput("");
         }
         if (data) {
-            navigate("/bookkeeper/booktab");
+            let i = 0;
+            const newBookTabs = bookTabs.filter((t, index) => {
+                i = index;
+                return t.id != id;
+            });
+
+            const length = newBookTabs.length;
+            let aTab = "home";
+            if (length != 0) {
+                if (length <= i) {
+                    aTab = newBookTabs[length - 1].title;
+                } else {
+                    aTab = newBookTabs[i].title;
+                }
+            }
+            setActiveTab(aTab);
+            setBookTabs([...newBookTabs]);
             alertSuccess("Book Deleted successfully!");
         }
         reset();

@@ -1,41 +1,38 @@
 import { FormEvent, useContext } from "react";
-import BookSearch from "./BookSearch";
+import { LoanTabsContext } from "../../state/state";
 import { Tab } from "../../Types/types";
-import BookInfo from "./BookInfo";
-import { BookTabsContext } from "../../state/state";
-import BookAdd from "./BookAdd";
+import LoanSearch from "./LoanSearch";
 
-const BookTab = () => {
-    const { bookTabs, setBookTabs, activeTab, setActiveTab } =
-        useContext(BookTabsContext);
+const LoanTab = () => {
+    const { loanTabs, setLoanTabs, activeTab, setActiveTab } =
+        useContext(LoanTabsContext);
 
     const addTabs = (tab: Tab) => {
-        if (!bookTabs.find((t) => t.title == tab.title)) {
-            setBookTabs([...bookTabs, tab]);
+        if (!loanTabs.find((t) => t.id == tab.id)) {
+            setLoanTabs([...loanTabs, tab]);
         }
-
-        setActiveTab(tab.title);
+        setActiveTab(tab.id);
     };
 
     const removeTabs = (e: FormEvent, tab: Tab) => {
         e.stopPropagation();
         let i = 0;
-        const newBookTabs = bookTabs.filter((t, index) => {
+        const newLoanTabs = loanTabs.filter((t, index) => {
             i = index;
             return t.id != tab.id;
         });
 
-        const length = newBookTabs.length;
+        const length = newLoanTabs.length;
         let aTab = "home";
         if (length != 0) {
             if (length <= i) {
-                aTab = newBookTabs[length - 1].title;
+                aTab = newLoanTabs[length - 1].id;
             } else {
-                aTab = newBookTabs[i].title;
+                aTab = newLoanTabs[i].id;
             }
         }
         setActiveTab(aTab);
-        setBookTabs([...newBookTabs]);
+        setLoanTabs([...newLoanTabs]);
     };
     return (
         <div className="bg-base-300 p-4 rounded-box shadow-xl w-full mx-4">
@@ -51,19 +48,19 @@ const BookTab = () => {
                 >
                     Home
                 </div>
-                {bookTabs.map((tab) => {
+                {loanTabs.map((tab) => {
                     return (
                         <div
                             className={
                                 "rounded-t-lg p-4 font-semibold cursor-pointer border-gray-600 text-nowrap " +
-                                (activeTab == tab.title
+                                (activeTab == tab.id
                                     ? " border-b-0 border-2"
                                     : "border-b-2 hover:bg-base-100")
                             }
-                            onClick={() => setActiveTab(tab.title)}
+                            onClick={() => setActiveTab(tab.id)}
                         >
-                            {tab.title}
-                            {activeTab == tab.title && (
+                            Loan
+                            {activeTab == tab.id && (
                                 <button
                                     className="btn btn-xs btn-circle btn-ghost ml-1"
                                     onClick={(e) => removeTabs(e, tab)}
@@ -82,20 +79,15 @@ const BookTab = () => {
                     <>
                         <div className="headline flex flex-row justify-between items-center">
                             <div className="text-3xl font-semibold">
-                                Book Search
+                                Loan Search
                             </div>
-                            <BookAdd />
                         </div>
 
-                        <BookSearch addTabs={addTabs} />
+                        <LoanSearch addTabs={addTabs} />
                     </>
                 ) : (
-                    bookTabs.map((tab) => {
-                        return (
-                            activeTab == tab.title && (
-                                <BookInfo key={tab.id} id={tab.id} />
-                            )
-                        );
+                    loanTabs.map((tab) => {
+                        return activeTab == tab.id && <></>;
                     })
                 )}
             </div>
@@ -103,4 +95,4 @@ const BookTab = () => {
     );
 };
 
-export default BookTab;
+export default LoanTab;

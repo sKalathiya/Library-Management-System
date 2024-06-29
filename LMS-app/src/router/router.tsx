@@ -3,9 +3,11 @@ import App from "../App";
 import BookKeeper from "../Bookkeeper";
 import { Login, Register } from "../Authentication";
 import BookTab from "../Bookkeeper/Book/BookTab";
-import BookInfo from "../Bookkeeper/Book/BookInfo";
 import AuthenticateRole from "../Authentication/AuthenticateRole";
 import Authenticate from "../Authentication/Authenticate";
+import { BookTabsProvider, LoanTabsProvider } from "../state/state";
+import DashboardTab from "../Bookkeeper/dashboard/dashboardTab";
+import LoanTab from "../Bookkeeper/Loan/LoanTab";
 
 export const router = createBrowserRouter([
     {
@@ -25,12 +27,24 @@ export const router = createBrowserRouter([
                 ),
                 children: [
                     {
-                        path: "booktab",
-                        element: <BookTab />,
+                        path: "",
+                        element: <DashboardTab />,
                     },
                     {
-                        path: "bookinfo",
-                        element: <BookInfo />,
+                        path: "book",
+                        element: (
+                            <BookTabsProvider>
+                                <BookTab />
+                            </BookTabsProvider>
+                        ),
+                    },
+                    {
+                        path: "loan",
+                        element: (
+                            <LoanTabsProvider>
+                                <LoanTab />
+                            </LoanTabsProvider>
+                        ),
                     },
                 ],
             },

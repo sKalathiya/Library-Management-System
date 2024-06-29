@@ -1,10 +1,11 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import Model from "../../Helpers/Model";
 import MultipleSelect from "../../Helpers/MultipleSelect";
 import { Book } from "../../Types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBook } from "./API/api";
 import { alertSuccess } from "../../Helpers/Alert";
+import { BookTabsContext } from "../../state/state";
 
 interface BookUpdateProps {
     book: Book;
@@ -12,6 +13,7 @@ interface BookUpdateProps {
 
 const BookUpdate = ({ book }: BookUpdateProps) => {
     const [toggleModal, setToggleModal] = useState(false);
+    const { bookTabs, setBookTabs, setActiveTab } = useContext(BookTabsContext);
     const [publisherUpdateList, setPublisherList] = useState(book.publisher);
     const [languageUpdateList, setLanguageList] = useState(book.language);
     const [formData, setFormData] = useState<Book>(book);
@@ -41,6 +43,14 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
             setFormData(book);
         }
         if (data) {
+            bookTabs.map((t) => {
+                if (t.id == book._id && t.title != formData.title) {
+                    t.title = formData.title;
+                }
+                return t;
+            });
+            setBookTabs([...bookTabs]);
+            setActiveTab(formData.title);
             setToggleModal(!toggleModal);
             alertSuccess("Update Successful!");
         }
@@ -167,6 +177,9 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                     </div>
 
                     <div className="w-full">
+                        <label className="block text-sm font-semibold mb-2">
+                            Publishers
+                        </label>
                         <MultipleSelect
                             label={"Publishers"}
                             items={publisherUpdateList}
@@ -175,6 +188,9 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
                     </div>
 
                     <div className="w-full">
+                        <label className="block text-sm font-semibold mb-2">
+                            Languages
+                        </label>
                         <MultipleSelect
                             label={"Languages"}
                             items={languageUpdateList}

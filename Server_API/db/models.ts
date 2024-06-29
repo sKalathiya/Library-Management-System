@@ -1,5 +1,34 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
+export interface Book extends Document {
+    _id: string;
+    title: string;
+    description: string;
+    author: string;
+    cover: string;
+    publish_year: number;
+    publisher: string[];
+    language: string[];
+    Total_copies: number;
+    Available_copies: number;
+    category: string;
+    last_Updated: Date;
+    updatedBy_User: string;
+}
+
+export interface User extends Document {
+    firstName: string;
+    lastName: string;
+    phone: number;
+    address: {
+        street: string;
+        city: string;
+        country: string;
+        post_code: string;
+    };
+    email: string;
+    role: string;
+}
 
 const bookSchema = new mongoose.Schema({
     "title": {type: String, require: true},
@@ -27,9 +56,6 @@ const userSchema = new mongoose.Schema({
         "post_code": {type: String, require: true},
     },
     "email": {type: String, require: true},
-
-  
-
     "phone": {type: Number, require: true},
     "favoriteBooks": [String],
     "role":{type:String, enum: ['Patron','Bookkeeper']}
@@ -43,16 +69,18 @@ const authenticationSchema = new mongoose.Schema({
 })
 
 const lendingSchema= new mongoose.Schema({
-    "bookId": {type: String, require: true},
-    "borrowerUser": {type: String, require: true},
-    "lenderUser": {type: String, require: true},
-    "updatedByUser": {type: String, require: true},
+    "book":{ type: Schema.Types.ObjectId , ref: 'Book' },
+    "borrowerUser": { type: Schema.Types.ObjectId, ref: 'User' },
+    "lenderUser": { type: Schema.Types.ObjectId, ref: 'User' },
+    "updatedByUser": { type: Schema.Types.ObjectId, ref: 'User' },
     "date_Borrowed": {type: Date, require: true},
     "Last_Updated": {type: Date, require: true, select: false},
     "Expected_Returned": {type: Date, require: true, select: false},
     "borrowedDays": {type: Number, require: true, select: false},
-    "status": {type: String, enum:['Returned', 'Borrowed', 'Damaged', 'Lost', 'Delayed Return', "Cancelled"], require: true}
+    "status": {type: String, enum:['Returned', 'Borrowed', 'Damaged', 'Lost', 'Delayed_Return', "Cancelled"], require: true}
 })
+
+
 
 
 export const bookModel = mongoose.model("Book", bookSchema);

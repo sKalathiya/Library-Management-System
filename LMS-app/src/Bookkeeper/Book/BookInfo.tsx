@@ -1,32 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "react-router";
 import { getBook } from "./API/api";
-
 import Skeleton from "../../Helpers/Skeleton";
 import BookUpdate from "./BookUpdate";
 import BookDelete from "./BookDelete";
 
-const BookInfo = () => {
-    const { state } = useLocation();
+interface BookInfoProps {
+    id: string;
+}
 
-    if (!state?.id) {
-        return (
-            <div className="bg-base-300 p-4 rounded-box shadow-xl w-full mx-4">
-                <div className="text-red-600 text-2xl">
-                    Something Went Wrong!!!
-                </div>
-            </div>
-        );
-    }
-
+const BookInfo = ({ id }: BookInfoProps) => {
     const {
         data: book,
         isLoading,
         isError,
         error,
     } = useQuery({
-        queryFn: () => getBook(state.id),
-        queryKey: ["book", state.id],
+        queryFn: () => getBook(id),
+        queryKey: ["book", id],
     });
 
     if (book) {
@@ -38,21 +28,21 @@ const BookInfo = () => {
     }
 
     return (
-        <div className="bg-base-300 p-4 rounded-box shadow-xl mx-4">
+        <div className="flex flex-row gap-8 justify-between">
             {isLoading ? (
-                <Skeleton></Skeleton>
+                <Skeleton />
             ) : isError ? (
                 <span className="text-red-600">{error?.message}</span>
             ) : (
-                <div className="flex flex-row gap-8 m-2 p-4">
+                <>
                     <div className="p-4 rounded-box justify-self-start border-gray-600 border-2 max-w-80 max-h-96">
                         <img
                             className=" w-full h-full hover:scale-105 transition duration-300 ease-in-out cursor-pointer object-fill "
                             src={"http://localhost:8080/images/" + book.cover}
-                            alt="image description"
+                            alt="image not found"
                         />
                     </div>
-                    <div className="p-4 flex flex-col gap-8 ">
+                    <div className="flex flex-col gap-8 ">
                         <div className="flex flex-row gap-2 items-center flex-wrap ">
                             <div className=" text-3xl font-semibold">
                                 {book.title}
@@ -128,7 +118,7 @@ const BookInfo = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
         </div>
     );

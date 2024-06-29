@@ -44,3 +44,29 @@ export interface Book {
     last_Updated: Date;
     updatedBy_User: string;
 }
+
+export interface Tab {
+    id: string;
+    title: string;
+}
+
+export interface Loan {
+    book: Book | string;
+    borrowerUser: User | string;
+    lenderUser: User | string;
+    updatedByUser: User | string;
+    date_Borrowed: Date;
+    Last_Updated: Date;
+    Expected_Returned: Date;
+    borrowedDays: Number;
+    status: Status;
+}
+
+export enum Status {
+    Returned,
+    Borrowed,
+    Damaged,
+    Lost,
+    Delayed_Return,
+    Cancelled,
+}
