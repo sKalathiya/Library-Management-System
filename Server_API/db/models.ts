@@ -30,6 +30,15 @@ export interface User extends Document {
     role: string;
 }
 
+export interface LendingSearch {
+    borrowerUser?: mongoose.Types.ObjectId;
+    lenderUser?: mongoose.Types.ObjectId;
+    date_Borrowed?: {};
+    borrowedDays?: number;
+    status?: string;
+    book?: mongoose.Types.ObjectId;
+}
+
 const bookSchema = new mongoose.Schema({
     "title": {type: String, require: true},
     "author": {type: String, require: true},
@@ -74,9 +83,10 @@ const lendingSchema= new mongoose.Schema({
     "lenderUser": { type: Schema.Types.ObjectId, ref: 'User' },
     "updatedByUser": { type: Schema.Types.ObjectId, ref: 'User' },
     "date_Borrowed": {type: Date, require: true},
-    "Last_Updated": {type: Date, require: true, select: false},
-    "Expected_Returned": {type: Date, require: true, select: false},
-    "borrowedDays": {type: Number, require: true, select: false},
+    "Last_Updated": {type: Date, require: true},
+    "Expected_Returned": {type: Date, require: true},
+    "borrowedDays": {type: Number, require: true},
+    "date_Returned":{type: Date},
     "status": {type: String, enum:['Returned', 'Borrowed', 'Damaged', 'Lost', 'Delayed_Return', "Cancelled"], require: true}
 })
 

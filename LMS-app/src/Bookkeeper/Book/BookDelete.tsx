@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { deleteBook } from "./API/api";
 import Model from "../../Helpers/Model";
 import { alertSuccess } from "../../Helpers/Alert";
-import { BookTabsContext } from "../../state/state";
+import { TabsContext } from "../../state/state";
 
 interface BookDeleteProps {
     id: string;
@@ -12,7 +12,7 @@ interface BookDeleteProps {
 }
 const BookDelete = ({ id, title }: BookDeleteProps) => {
     const [toggleModal, setToggleModal] = useState(false);
-    const { bookTabs, setBookTabs, setActiveTab } = useContext(BookTabsContext);
+    const { tabs, setTabs, setActiveTab } = useContext(TabsContext);
     const [input, setInput] = useState("");
     const [inputError, setInputError] = useState("");
     const queryClient = useQueryClient();
@@ -39,22 +39,22 @@ const BookDelete = ({ id, title }: BookDeleteProps) => {
         }
         if (data) {
             let i = 0;
-            const newBookTabs = bookTabs.filter((t, index) => {
+            const newTabs = tabs.filter((t, index) => {
                 i = index;
-                return t.id != id;
+                return t._id != id;
             });
 
-            const length = newBookTabs.length;
+            const length = newTabs.length;
             let aTab = "home";
             if (length != 0) {
                 if (length <= i) {
-                    aTab = newBookTabs[length - 1].title;
+                    aTab = newTabs[length - 1]._id;
                 } else {
-                    aTab = newBookTabs[i].title;
+                    aTab = newTabs[i]._id;
                 }
             }
             setActiveTab(aTab);
-            setBookTabs([...newBookTabs]);
+            setTabs([...newTabs]);
             alertSuccess("Book Deleted successfully!");
         }
         reset();

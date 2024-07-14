@@ -90,9 +90,9 @@ const BookAdd = () => {
             <button
                 onClick={() => setToggleModal(!toggleModal)}
                 className="cursor-pointer btn bg-blue-600 text-gray-100 hover:bg-blue-500"
-                title="Add Book"
+                title="New Book"
             >
-                <i className="fas fa-2xl fa-plus-circle"></i> Add Book
+                <i className="fas fa-2xl fa-book-open"></i> New Book
             </button>
 
             <Model

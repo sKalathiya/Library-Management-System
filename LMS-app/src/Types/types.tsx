@@ -46,15 +46,17 @@ export interface Book {
 }
 
 export interface Tab {
-    id: string;
-    title: string;
+    _id: string;
+    tab_title: string;
+    tab_type: TabRole;
 }
 
 export interface Loan {
-    book: Book | string;
-    borrowerUser: User | string;
-    lenderUser: User | string;
-    updatedByUser: User | string;
+    _id: string;
+    book: Book;
+    borrowerUser: User;
+    lenderUser: User;
+    updatedByUser: User;
     date_Borrowed: Date;
     Last_Updated: Date;
     Expected_Returned: Date;
@@ -69,4 +71,9 @@ export enum Status {
     Lost,
     Delayed_Return,
     Cancelled,
+}
+
+export enum TabRole {
+    Book,
+    Loan,
 }

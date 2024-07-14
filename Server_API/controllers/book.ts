@@ -143,7 +143,7 @@ export const deleteBook = async ( req: express.Request , res: express.Response) 
     const { id} = req.params;
 
     //checking if any lendings
-    const lendings = await getLendingByFilter_Action({bookId : id, status: "Borrowed"})
+    const lendings = await getLendingByFilter_Action({book : id, status: "Borrowed"})
     if(lendings.length != 0){
       return res.sendStatus(400);
     }

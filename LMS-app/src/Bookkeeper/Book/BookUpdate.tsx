@@ -5,7 +5,7 @@ import { Book } from "../../Types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBook } from "./API/api";
 import { alertSuccess } from "../../Helpers/Alert";
-import { BookTabsContext } from "../../state/state";
+import { TabsContext } from "../../state/state";
 
 interface BookUpdateProps {
     book: Book;
@@ -13,7 +13,7 @@ interface BookUpdateProps {
 
 const BookUpdate = ({ book }: BookUpdateProps) => {
     const [toggleModal, setToggleModal] = useState(false);
-    const { bookTabs, setBookTabs, setActiveTab } = useContext(BookTabsContext);
+    const { tabs, setTabs, setActiveTab } = useContext(TabsContext);
     const [publisherUpdateList, setPublisherList] = useState(book.publisher);
     const [languageUpdateList, setLanguageList] = useState(book.language);
     const [formData, setFormData] = useState<Book>(book);
@@ -43,14 +43,14 @@ const BookUpdate = ({ book }: BookUpdateProps) => {
             setFormData(book);
         }
         if (data) {
-            bookTabs.map((t) => {
-                if (t.id == book._id && t.title != formData.title) {
-                    t.title = formData.title;
+            tabs.map((t) => {
+                if (t._id == book._id && t.tab_title != formData.title) {
+                    t.tab_title = formData.title;
                 }
                 return t;
             });
-            setBookTabs([...bookTabs]);
-            setActiveTab(formData.title);
+            setTabs([...tabs]);
+            setActiveTab(book._id);
             setToggleModal(!toggleModal);
             alertSuccess("Update Successful!");
         }

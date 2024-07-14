@@ -83,11 +83,14 @@ export async function deleteBook(id: string) {
     return data;
 }
 
-export async function filterBooks(formData: FormData) {
+export async function filterBooks(formData: string) {
     const response = await fetch(localPath + "book/filter", {
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
     });
     if (response.status == 400) {
         throw new Error("Request Failed! Please Try again.");

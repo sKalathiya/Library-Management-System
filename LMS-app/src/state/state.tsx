@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { FormEvent, createContext, useState } from "react";
 import { Session, Tab } from "../Types/types";
 
 export interface SessionContextType {
@@ -24,54 +24,28 @@ export const SessionProvider = ({ children }: any) => {
     );
 };
 
-export interface BookTabsContextType {
-    bookTabs: Tab[];
-    setBookTabs: React.Dispatch<React.SetStateAction<Tab[]>>;
+export interface TabsContextType {
+    tabs: Tab[];
+    setTabs: React.Dispatch<React.SetStateAction<Tab[]>>;
     activeTab: string;
     setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const BookTabsContext = createContext<BookTabsContextType>({
-    bookTabs: [],
-    setBookTabs: () => {},
+export const TabsContext = createContext<TabsContextType>({
+    tabs: [],
+    setTabs: () => {},
     activeTab: "home",
     setActiveTab: () => {},
 });
 
-export const BookTabsProvider = ({ children }: any) => {
-    const [bookTabs, setBookTabs] = useState<Tab[]>([]);
+export const TabsProvider = ({ children }: any) => {
+    const [tabs, setTabs] = useState<Tab[]>([]);
     const [activeTab, setActiveTab] = useState<string>("home");
     return (
-        <BookTabsContext.Provider
-            value={{ bookTabs, setBookTabs, activeTab, setActiveTab }}
+        <TabsContext.Provider
+            value={{ tabs, setTabs, activeTab, setActiveTab }}
         >
             {children}
-        </BookTabsContext.Provider>
-    );
-};
-
-export interface LoanTabsContextType {
-    loanTabs: Tab[];
-    setLoanTabs: React.Dispatch<React.SetStateAction<Tab[]>>;
-    activeTab: string;
-    setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export const LoanTabsContext = createContext<LoanTabsContextType>({
-    loanTabs: [],
-    setLoanTabs: () => {},
-    activeTab: "home",
-    setActiveTab: () => {},
-});
-
-export const LoanTabsProvider = ({ children }: any) => {
-    const [loanTabs, setLoanTabs] = useState<Tab[]>([]);
-    const [activeTab, setActiveTab] = useState<string>("home");
-    return (
-        <LoanTabsContext.Provider
-            value={{ loanTabs, setLoanTabs, activeTab, setActiveTab }}
-        >
-            {children}
-        </LoanTabsContext.Provider>
+        </TabsContext.Provider>
     );
 };

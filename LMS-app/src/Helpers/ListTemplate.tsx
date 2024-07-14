@@ -1,19 +1,28 @@
 import { useState } from "react";
 import { renderPagination } from "./Pagination";
-import { Book } from "../Types/types";
+import { Book, Loan } from "../Types/types";
 
 interface ListTemplateProps {
-    items: Book[] | string[];
+    items: Book[] | Loan[] | string[];
     titles: string[];
     properties: string[];
     clickFunction: ([]) => void;
+    itemsPerPage: number;
 }
 
 const access = (path: string, object: any) => {
     const p = path.split(".");
     let current = object;
     p.forEach((p) => {
-        current = current[p];
+        if (p.includes("date")) {
+            current = new Date(current[p]).toLocaleDateString([], {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+        } else {
+            current = current[p];
+        }
     });
     return current;
 };
@@ -23,10 +32,12 @@ const ListTemplate = ({
     titles,
     properties,
     clickFunction,
+    itemsPerPage,
 }: ListTemplateProps) => {
+    console.log(items);
     const [page, setPage] = useState<number>(1);
     const total = items.length;
-    const itemsPerPage = 10;
+
     const totalPages = Math.ceil(total / itemsPerPage);
 
     const handlePageClick = (pageNumber: number) => {
@@ -39,19 +50,17 @@ const ListTemplate = ({
 
     let i: number = startIndex;
     return (
-        <div className="flex flex-col w-full justify-items-stretch">
+        <div className="flex flex-col">
             {items.length == 0 ? (
                 <></>
             ) : (
                 <>
-                    <div className="flex flex-row p-4 mb-2 border-b-2 border-gray-600 gap-2">
-                        <div className="flex-grow w-full font-semibold">
-                            No.
-                        </div>
+                    <div className="flex flex-row p-4 mb-2 border-b-2 border-gray-600 gap-2 justify-between">
+                        <div className="font-semibold w-full">No.</div>
                         {titles.map((title: any) => {
                             return (
                                 <div
-                                    className="flex-grow w-full font-semibold"
+                                    className="font-semibold w-full"
                                     key={title}
                                 >
                                     {title}
@@ -63,16 +72,17 @@ const ListTemplate = ({
                     {list.map((item: any) => {
                         return (
                             <div
-                                className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover: cursor-pointer gap-2 items-center"
+                                className="flex flex-row p-4 mb-2 hover:bg-base-100 rounded-box hover:cursor-pointer gap-2 "
                                 key={item._id}
                                 onClick={() => clickFunction([item])}
                             >
-                                <div className="flex-grow w-full ">{++i}</div>
+                                <div className="w-full">{++i}</div>
                                 {properties.map((title: string) => {
                                     return (
                                         <div
-                                            className="flex-grow w-full "
+                                            className="truncate w-full"
                                             key={title}
+                                            title={access(title, item)}
                                         >
                                             {access(title, item)}
                                         </div>
@@ -87,7 +97,7 @@ const ListTemplate = ({
                             {startIndex + 1} - {endIndex} of {total}
                         </div>
 
-                        {total > 10 &&
+                        {total > itemsPerPage &&
                             renderPagination(page, totalPages, handlePageClick)}
                     </div>
                 </>
