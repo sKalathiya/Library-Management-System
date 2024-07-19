@@ -6,6 +6,7 @@ import AuthenticateRole from "../Authentication/AuthenticateRole";
 import Authenticate from "../Authentication/Authenticate";
 import { TabsProvider } from "../state/state";
 import DashboardTab from "../Bookkeeper/dashboard/dashboardTab";
+import ViewProfile from "../User/ViewProfile";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
                         ),
                     },
                 ],
+            },
+            {
+                path: "user",
+                element: <ViewProfile />,
             },
         ],
     },

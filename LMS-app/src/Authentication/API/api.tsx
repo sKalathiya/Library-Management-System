@@ -1,52 +1,74 @@
 import { Auth, User } from "../../Types/types";
+import { UpdateAuth } from "../UpdatePassword";
 
-const localPath = "http://localhost:8080/"
+const localPath = "http://localhost:8080/";
 
 export async function addPatron(user: User) {
-  const response = await fetch(localPath + 'register',{
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    const response = await fetch(localPath + "register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
-        credentials: "include"
-  });
-  
-  if(response.status == 400){
-    throw new Error("Request Failed! Please Try again.")
+        credentials: "include",
+    });
 
-  }else if( response.status == 401 || response.status == 403){
-    throw new Error("Not Authorized!!")
-  }
-  const data = await response.json(); 
-  return data;
+    if (response.status == 400) {
+        throw new Error("Request Failed! Please Try again.");
+    } else if (response.status == 401 || response.status == 403) {
+        throw new Error("Not Authorized!!");
+    }
+    const data = await response.json();
+    return data;
 }
 
-export async function authUser( auth: Auth) {
-  const response = await fetch(localPath +'login', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(auth),
-    credentials: "include",
-  });
-  
-  if(response.status == 400){
-    throw new Error("Request Failed! Please Try again.")
+export async function authUser(auth: Auth) {
+    const response = await fetch(localPath + "login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(auth),
+        credentials: "include",
+    });
 
-  }else if( response.status == 401 || response.status == 403){
-    throw new Error("Not Authorized!!")
-  }
-  const data = await response.json(); 
-  return data;
-
+    if (response.status == 400) {
+        throw new Error("Request Failed! Please Try again.");
+    } else if (response.status == 401 || response.status == 403) {
+        throw new Error("Not Authorized!!");
+    }
+    const data = await response.json();
+    return data;
 }
 
-export async function logoutUser( ){
-  const response = await fetch( localPath + "logout",{credentials: "include",})
-  if(response.status == 400){
-    throw new Error("Request Failed! Please Try again.")
+export async function logoutUser() {
+    const response = await fetch(localPath + "logout", {
+        credentials: "include",
+    });
+    if (response.status == 400) {
+        throw new Error("Request Failed! Please Try again.");
+    } else if (response.status == 401 || response.status == 403) {
+        throw new Error("Not Authorized!!");
+    }
+    const data = response.status;
+    return data;
+}
 
-  }else if( response.status == 401 || response.status == 403){
-    throw new Error("Not Authorized!!")
-  }
-  const data = response.status; 
-  return data;
+export async function updateAuth({
+    auth,
+    id,
+}: {
+    auth: UpdateAuth;
+    id: string;
+}) {
+    const response = await fetch(localPath + "updatePassword/" + id, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(auth),
+        credentials: "include",
+    });
+
+    if (response.status == 400) {
+        throw new Error("Request Failed! Please Try again.");
+    } else if (response.status == 401 || response.status == 403) {
+        throw new Error("Not Authorized!!");
+    }
+    const data = await response.json();
+    return data;
 }

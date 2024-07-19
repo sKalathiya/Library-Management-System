@@ -128,15 +128,17 @@ export const deleteUser = async ( req: express.Request , res: express.Response) 
         if(authenticate){
           //removing lendings
           await deleteLendingByBorrower_Action(id);
-          return res.sendStatus(200);
+          return res.status(200).json({status: "success"}).end();
         }
         //if not removed
         else{
           //add user back again
           await user.save();
+         
           return res.sendStatus(400);
         }
     }else{
+    
         return res.sendStatus(400);
     }
 

@@ -1,76 +1,132 @@
+import { useMutation } from "@tanstack/react-query";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { updateAuth } from "./API/api";
+import { SessionContext } from "../state/state";
+import { alertSuccess } from "../Helpers/Alert";
+import Model from "../Helpers/Model";
+
+export interface UpdateAuth {
+    password: string;
+    confirmPassword: string;
+    newPassword: string;
+}
+
 const UpdatePassword = () => {
+    const [toggleModal, setToggleModal] = useState(false);
+    const { session } = useContext(SessionContext);
+    const [inputError, setInputError] = useState("");
+    const [auth, setAuth] = useState<UpdateAuth>({
+        newPassword: "",
+        confirmPassword: "",
+        password: "",
+    });
+
+    const {
+        mutate: UpdatePassword,
+        data,
+        isPending,
+        isError,
+        error,
+        reset,
+    } = useMutation({
+        mutationFn: updateAuth,
+    });
+
+    useEffect(() => {
+        if (toggleModal) {
+            // Refresh the modal content when it opens
+            setAuth({ newPassword: "", confirmPassword: "", password: "" });
+        }
+
+        if (data) {
+            setToggleModal(!toggleModal);
+            alertSuccess("Password Updated Successfully!");
+        }
+        reset();
+    }, [data, toggleModal]);
+
+    //handle submit data
+    const handleSubmit = (event: FormEvent) => {
+        event.preventDefault();
+        if (auth.newPassword != auth.confirmPassword) {
+            setInputError("New Password does not match!");
+        } else {
+            UpdatePassword({ auth, id: session._id });
+        }
+        setInputError("");
+    };
+
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setAuth((prevFormData) => ({ ...prevFormData, [name]: value }));
+    };
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <form className="bg-base-300 p-4 rounded-box shadow-xl max-w-lg">
-                <div className="text-3xl font-semibold m-2 p-4 ">Login</div>
-                {isError && (
-                    <div className="text-red-500 font-light ml-6">
-                        {error.message}
-                    </div>
-                )}
+        <>
+            <div
+                className="flex justify-center m-2 p-4 cursor-pointer rounded-box hover:bg-base-100"
+                onClick={() => setToggleModal(!toggleModal)}
+            >
+                Update Password
+            </div>
 
-                <div className="m-2 p-4 flex flex-row justify-between gap-8 flex-initial">
-                    <div>
-                        <label className="block text-sm font-semibold mb-2">
-                            Email
-                        </label>
-                        <input
-                            className="input input-bordered w-full"
-                            placeholder="Email"
-                            name="email"
-                            value={auth.email}
-                            onChange={onChange}
-                        />
+            <Model
+                toggle={toggleModal}
+                setToggle={setToggleModal}
+                onSubmit={handleSubmit}
+                isLoading={isPending}
+                isDelete={false}
+            >
+                <div className=" flex flex-col justify-between gap-8 flex-initial">
+                    <div className="text-3xl font-semibold">
+                        Update Password
                     </div>
-
+                    {(isError || inputError != "") && (
+                        <div className="text-red-500 font-light">
+                            {(error ? error.message : "") + inputError}
+                        </div>
+                    )}
                     <div>
                         <label className="block text-sm font-semibold mb-2">
                             Password
                         </label>
                         <input
-                            type="password"
                             className="input input-bordered w-full"
-                            placeholder="password"
+                            placeholder="Password"
                             name="password"
                             value={auth.password}
                             onChange={onChange}
                         />
                     </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold mb-2">
+                            New Password
+                        </label>
+                        <input
+                            type="password"
+                            className="input input-bordered w-full"
+                            placeholder="New Password"
+                            name="newPassword"
+                            value={auth.newPassword}
+                            onChange={onChange}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold mb-2">
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            className="input input-bordered w-full"
+                            placeholder="Confirm Password"
+                            name="confirmPassword"
+                            value={auth.confirmPassword}
+                            onChange={onChange}
+                        />
+                    </div>
                 </div>
-                <a className="link link-hover ml-6">Forgot Password?</a>
-                <div className=" m-2 p-4 ">
-                    {isPending ? (
-                        <>
-                            <button
-                                className="btn w-full bg-blue-600 text-gray-100 font-semibold hover:bg-blue-500 cursor-not-allowed"
-                                onClick={handleSubmit}
-                            >
-                                <span className="loading loading-dots loading-md"></span>
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button
-                                className="btn w-full bg-blue-600 text-gray-100 font-semibold hover:bg-blue-500 "
-                                onClick={handleSubmit}
-                            >
-                                Login
-                            </button>
-                        </>
-                    )}
-                </div>
-                <div className="ml-6">
-                    Not a User?{" "}
-                    <a
-                        href="/auth/Register"
-                        className="link link-hover text-blue-600"
-                    >
-                        Register
-                    </a>{" "}
-                    here.
-                </div>
-            </form>
-        </div>
+            </Model>
+        </>
     );
 };
 

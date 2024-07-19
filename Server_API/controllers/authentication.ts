@@ -2,6 +2,7 @@ import express from "express";
 import { getUserByFilter_Action, addUser_Action, deleteUser_Action, getUserById_Action, getUserByEmail_Action } from "../db/actions/userActions";
 import {  addAuthentication_Action, getAuthenticationBySession_Action, getAuthentication_Action, updateAuthentication_Action} from '../db/actions/authenticationActions';
 import { random, authentication } from "../helpers";
+import user from "../router/user";
 
 /************************************************  USER *********************************************** */
 
@@ -160,7 +161,7 @@ export const registerUser = async ( req: express.Request, res: express.Response)
       auth.key = newKey;
       await auth.save();
 
-      return res.sendStatus(200);
+      return res.status(200).json({status: "Success"}).end();
 
     } catch (error) {
       console.log(error);
